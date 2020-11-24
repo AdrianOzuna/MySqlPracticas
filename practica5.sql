@@ -1,0 +1,291 @@
+#create database practica5;
+use practica5;
+
+#Ejercicio 1:
+
+/*Problema 1:
+  Una empresa almacena los datos de sus empleados en una tabla "empleados".
+*/
+
+/*Elimine la tabla empleados, si existe.*/
+drop table if exists empleados;
+
+/*Cree una tabla llamada "empleados" con la estrucutra necesaria para para almacenar la siguiente información:
+ - nombre del empleado,
+ - documento,
+ - sexo,
+ - domicilio,
+ - sueldo básico (hasta 9999.99),
+ - hijos a cargo,
+ - clave primaria: documento.
+*/
+create table empleados(
+	nombre varchar(30),
+    documento char(8),
+    sexo char(1),
+    domicilio varchar(30),
+    sueldobasico decimal(6,2),
+    hijos tinyint,
+    primary key (documento)
+);
+
+/*Ingrese los siguientes registros:*/
+insert into empleados (nombre,documento,sexo,sueldobasico,hijos)
+	values ('Juan Perez','22333444','m',300,1);
+insert into empleados (nombre,documento,sexo,sueldobasico,hijos)
+	values ('Ana Acosta','21333444','f',400,2);
+insert into empleados (nombre,documento,sexo,sueldobasico,hijos)
+	values ('Alberto Lopez','24333444','m',600,0);
+insert into empleados (nombre,documento,sexo,sueldobasico,hijos)
+	values ('Carlos Sanchez','30333444','m',550,3);
+insert into empleados (nombre,documento,sexo,sueldobasico,hijos)
+	values ('Mariana Torres','23444555','f',600,1);
+insert into empleados (nombre,documento,sexo,sueldobasico,hijos)
+	values ('Marcos Garcia','23664555','m',1500,2);
+    
+/*La empresa está pensando en aumentar un 10% el sueldo a los empleados, y quiere saber a cuánto 
+  subiría cada sueldo básico, para ello usamos la siguiente sentencia en la cual incluimos una 
+  columna que hará el cálculo de cada sueldo más el 10%.
+*/
+select nombre,documento,sexo,sueldobasico,hijos,sueldobasico*0.1 from empleados;
+
+/*La empresa paga un salario familiar por hijos a cargo, $200 por cada hijo. Necesitamos el nombre 
+  del empleado, el sueldo básico, la cantidad de hijos a cargo, el total del salario familiar y el 
+  suedo final (incluyendo el salario familiar).
+*/
+select nombre,sueldobasico,hijos,hijos*200,sueldobasico+(hijos*200) from empleados;
+
+/*Problema 2: 
+  Un comercio vende artículos de librería y papelería. Almacena en una tabla los siguientes datos:
+ - codigo: int unsigned auto_increment, clave primaria,
+ - nombre: varchar(30),
+ - precio: decimal(5,2),
+ - cantidad: smallint unsigned.
+*/
+
+/*Elimine la tabla, si existe*/
+drop table if exists articulos;
+
+/*Cree la tabla con la estructura necearia para almacenar los datos descriptos anteriormente*/
+create table articulos(
+	codigo int unsigned auto_increment,
+    nombre varchar(30),
+    precio decimal(5,2),
+    cantidad smallint unsigned,
+    primary key (codigo)
+);
+
+/*Inserte los siguientes registros.*/
+insert into articulos (nombre,precio,cantidad)
+	values ('lapices coloresx6',1.4,100);
+insert into articulos (nombre,precio,cantidad)
+	values ('lapices coloresx12',2.5,100);
+insert into articulos (nombre,precio,cantidad)
+	values ('lapices coloresx24',4.7,100);
+insert into articulos (nombre,precio,cantidad)
+	values ('goma tinta',0.2,150);
+insert into articulos (nombre,precio,cantidad)
+	values ('birome',1.2,200);
+insert into articulos (nombre,precio,cantidad)
+	values ('escuadra',3.2,200);
+insert into articulos (nombre,precio,cantidad)
+	values ('compás plástico',5,200);
+insert into articulos (nombre,precio,cantidad)
+	values ('compás metal',8.4,250);
+
+/*El precio representa el costo del artículo al comprarlo. Este comercio vende sus artículos por 
+  mayor y por menor, para la venta minorista incrementa el precio de costo en un 10%, para la venta 
+  mayorista lo incrementa en un 5%. Muestre los precios de cada artículo y calcule en 2 columnas 
+  diferentes el precio de cada uno de ellos al venderse por mayor y por menor.
+*/ 
+select nombre,precio,precio+(precio*0.1),precio+(precio*0.5) from articulos;
+
+/*El gerente de dicho comercio necesita saber cuánto dinero hay invertido en cada artículo, para 
+  ello, necesitamos multiplicar el precio de cada artículo por la cantidad.
+*/
+select nombre,precio*cantidad from articulos;
+
+#Ejercicio 2:
+
+/*Problema 1:
+  Arreglar los problemas de sintaxis de este script sql para que pueda corre bien.
+  Trabajamos con la tabla "libros" de una librería.
+*/
+
+/*Eliminamos la tabla si existe.*/
+drop table if exists libros;
+
+/*Creamos la tabla "libros" con la siguiente estructura:*/
+create table libros(
+	codigo int unsigned auto_increment,
+	titulo varchar(40) not null,
+	autor varchar(30),
+	editorial varchar (20),
+	precio decimal(5,2) unsigned,
+	primary key(codigo)
+ );
+ 
+ /*Ingresamos algunos registros.*/
+ insert into libros (titulo,autor,editorial,precio)
+	values('El alehp','Borges','Paidos',33.4);
+ insert into libros (titulo,autor,editorial,precio)
+	values('Alicia en el pais de las maravillas','L. Carroll','Planeta',16);
+
+/*Usamos la funcion "concat_ws()":*/
+select concat_ws('-',titulo,autor)
+	from libros;
+
+/*Usamos la funcion "left():"*/
+select left(titulo,15)
+	from libros;
+
+/*Empleamos la función "insert()":*/
+select titulo, insert(editorial,1,0,'edit. ')
+	from libros;
+
+/*Usamos las funciones "lower()" y "upper()":*/
+select lower(titulo), upper(editorial)
+	from libros;
+
+#Ejercicio 3:
+
+/*Problema 1:
+  Arreglar los problemas de sintaxis de este script sql para que pueda corre bien.
+  Trabajamos con la tabla "libros" de una librería.
+*/
+
+/*Eliminamos la tabla libros*/
+drop table if exists libros;
+
+/*Creamos la tabla "libros" con la siguiente estructura:*/
+create table libros(
+	codigo int unsigned auto_increment,
+	titulo varchar(40) not null,
+	autor varchar(30),
+	editorial varchar (20),
+	precio decimal(5,2) unsigned,
+	primary key(codigo)
+ );
+ 
+ /*Ingresamos algunos registros:*/
+insert into libros (titulo,autor,editorial,precio)
+	value('El alehp','Borges','Paidos',33.4);
+insert into libros (titulo,autor,editorial,precio)
+	values('Alicia en el pais de las maravillas','L. Carroll','Planeta',16.3);
+insert into libros (titulo,autor,editorial,precio)
+	values('Alicia a traves del espejo','L. Carroll','Planeta',18.8);
+
+/*Usamos la función "ceiling(x)":*/
+select titulo, ceiling(precio),floor(precio)
+	from libros;
+
+/*Usando la funcion "round(x)"*/
+select titulo, round(precio)
+	from libros;
+    
+/*Empleamos la funcion "truncate(x,d):"*/
+select titulo, truncate(precio,0)
+	from libros;
+
+#Ejercicio 4:
+
+/*Problema 1:
+  Una empresa registra los datos de sus empleados en una tabla llamada "empleados".
+*/
+
+/*Elimine la tabla "empleados", si existe.*/
+drop table if exists empleados;
+
+/*Cree la tabla.*/
+create table empleados(
+	#Pongo varchar en vez de char ya que no todos los valores del campo "documento" tendran la misma longitud (el ultimo es mas largo).
+	documento varchar(9) not null,
+	nombre varchar(30) not null,
+	sexo char(1),
+	domicilio varchar(30),
+	fechaIngreso date,
+	fechaNacimiento date,
+	sueldoBasico decimal(5,2) unsigned,
+	primary key(documento)
+ );
+ 
+ /*Ingrese algunos registros:*/
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('22333111','Juan Perez','m','Colon 123','1990-02-01','1970-05-10',550);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('25444444','Susana Morales','f','Avellaneda 345','1995-04-01','1975-11-06',650);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('20111222','Hector Pereyra','m','Caseros 987','1995-04-01','1965-03-25',510);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('30000222','Luis Luque','m','Urquiza 456','1980-09-01','1980-03-29',700);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('20555444','Maria Laura Torres','f','San Martin 1122','2000-05-15','1965-12-22',700);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('30000234','Alberto Soto','m','Peru 232','2003-08-15','1989-10-10',420);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('20125478','Ana Gomez','f','Sarmiento 975','2004-06-14','1976-09-21',350);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('24154269','Ofelia Garcia','f','Triunvirato 628','2004-09-23','1974-05-12',390);
+ insert into empleados (documento,nombre,sexo,domicilio,fechaIngreso,fechaNacimiento,sueldoBasico)
+	values ('306154269','Federico Gonzalez','m','Peru 390','1996-08-15','1985-05-01',580);
+
+/*Es política de la empresa festejar cada fin de mes, los cumpleaños de todos los empleados que 
+  cumplen ese mes. Necesitamos los nombres y fecha de nacimiento de los empleados que cumplen años en 
+  el mes de mayo.
+*/
+select nombre,fechaNacimiento from empleados where month(fechaNacimiento)=5;
+
+/*También es política de la empresa, aumentar el 1% del sueldo básico a los empleados, cada vez 
+  que cumplen un año más de servicio. Necesitamos los nombres, fecha de ingreso a la empresa y sueldo 
+  básico de todos los empleados que cumplen un año más de servicio en el mes de agosto, y una columna 
+  calculando el incremento del sueldo.
+*/
+select nombre,fechaIngreso,sueldoBasico,sueldoBasico+(sueldoBasico*0.01) from empleados where month(fechaIngreso)=8;
+
+/*Actualizamos el sueldo aumentando el 1% a los empleados que cumplen un año de servicio en el mes de agosto.*/
+update empleados set sueldoBasico=sueldoBasico+(sueldoBasico*0.01) where month(fechaIngreso)=8;
+
+/*Verifique si la actualizacion se realizo*/
+select * from empleados;
+
+/* Si el empleado cumple 10,20,30,40... años de servicio, se le regala una placa recordatoria. La 
+   secretaria de Gerencia necesita saber la cantidad de años de servicio que cumplen los empleados que 
+   ingresaron en el mes de agosto para encargar dichas placas.
+   Pista para este ejercicio 8: En la sentencia anterior, extraemos el año de las fechas actual y de ingreso con la función "year
+   ()" y las restamos, para calcular los años de servicio. 
+*/
+select nombre, year(current_date)-year(fechaIngreso) from empleados;
+
+/*Problema 2: Un instituto de enseñanza almacena los datos de sus estudiantes en una tabla llamada "alumnos".*/
+drop table if exists alumnos;
+
+create table alumnos(
+	documento char(8) not null,
+	nombre varchar(30),
+	domicilio varchar(30),	
+	fechaNacimiento date,
+	primary key (documento)
+);
+
+/*Ingrese los siguientes registros:*/
+insert into alumnos (documento,nombre,domicilio,fechaNacimiento)
+	values('22345345','Mariana Perez','Colon 234','1986-10-08');
+insert into alumnos (documento,nombre,domicilio,fechaNacimiento)
+	values('23545345','Marcos Morales','Avellaneda 348','1985-12-18');
+insert into alumnos (documento,nombre,domicilio,fechaNacimiento)
+	values('24356345','Analia Gonzalez','Caseros 444','1976-06-28');
+insert into alumnos (documento,nombre,domicilio,fechaNacimiento)
+	values('20254125','Ramiro Torres','Dinamarca 209','1978-01-28');
+insert into alumnos (documento,nombre,domicilio,fechaNacimiento)
+	values('20445778','Carmen Miranda','Uspallata 999','1980-05-30');
+insert into alumnos (documento,nombre,domicilio,fechaNacimiento)
+	values('28111444','Natalia Figueroa','Sarmiento 856','1986-04-29');
+    
+/*El institulo quiere conocer las edades de los alumnos.
+Pista: con "year()" extraemos la parte correspondiente al año de ambas fechas 
+(actual y de nacimiento) y con "right()" extraemos los 5 primeros caracteres que representan la 
+parte del mes y día de ambas fechas; la comparación retorna 1 ó 0, lo que corresponde a la 
+diferencia de 1 año a restar de la edad si el dia de la fecha actual es anterior que la fecha de 
+nacimiento. Finalmente, se coloca un alias para usar como título de la columna para hacerlo más 
+comprensible.*/
+select year(current) from alumnos; 
