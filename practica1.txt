@@ -1,3 +1,4 @@
+create database practica_db;
 use practica_db;
 
 /*Ejercicio 1.*/

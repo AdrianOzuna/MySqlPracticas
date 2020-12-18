@@ -1,4 +1,4 @@
-#create database practica7;
+create database practica7;
 use practica7;
 
 SET sql_mode = '';

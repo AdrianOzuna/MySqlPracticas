@@ -1,0 +1,471 @@
+create database practica8;
+use practica8;
+
+/*Problema:  Una pequeña biblioteca de barrio registra los préstamos de sus libros en una tabla 
+
+llamada "prestamos". En ella almacena la siguiente información:
+
+ -título del libro,
+
+ -documento de identidad del socio a quien se le presta el libro,
+
+ -fecha de préstamo,
+
+ -fecha de devolución del libro,
+
+ -devuelto: si el libro ha sido o no devuelto.
+*/
+
+/*Elimine la tabla "prestamos", si existe.*/
+drop table if exists prestamos;
+
+/*Necesitamos una clave que identifique cada registro en la tabla "prestamos". El mismo libro
+no puede presarse en la misma fecha.*/
+
+/*Cree la tabla.*/
+create table prestamos(
+	titulo varchar(40) not null,
+	documento char(8) not null,
+	fechaprestamo date not null,
+	fechadevolucion date,
+	devuelto char(1) default 'N',
+	primary key(titulo,fechaprestamo)
+ );
+ 
+ /*Ingrese los siguientes registros para la tabla "prestamos".*/
+insert into prestamos (titulo,documento,fechaprestamo)
+	values('Manual de 1 grado','22333444','2006-07-10');
+insert into prestamos (titulo,documento,fechaprestamo)
+	values('Manual de 1 grado','22333444','2006-07-20');
+insert into prestamos (titulo,documento,fechaprestamo)
+	values('Manual de 1 grado','23333444','2006-07-15');
+insert into prestamos (titulo,documento,fechaprestamo)
+	values('El aleph','22333444','2006-07-10');
+insert into prestamos (titulo,documento,fechaprestamo)
+	values('El aleph','30333444','2006-08-10');
+    
+/*Intente ingresar un valor de clave primaria repetida.*/
+insert into prestamos (titulo,documento,fechaprestamo)
+	values('Manual de 1 grado','22333444','2006-07-10');
+    
+/*Otros problemas: Un consultorio médico en el cual trabajan 3 médicos registra las consultas de los pacientes en 
+una tabla llamada "consultas".*/
+
+/*Elimine la tabla si existe.*/
+drop table if exists consultas;
+
+/*La tabla contiende los siguientes datos:
+- fechayhora: datetime not null, fecha y hora de la consulta,
+
+- medico: varchar(30), not null, nombre del médico (Perez,Lopez,Duarte),
+
+- documento: char(8) not null, documento del paciente,
+
+- paciente: varchar(30), nombre del paciente,
+
+- obrasocial: varchar(30), nombre de la obra social ('IPAM','PAMI').
+*/
+create table consultas(
+	fechayhora datetime not null,
+	medico varchar(30) not null,
+	documento char(8) not null,
+	paciente varchar(30),
+	obrasocial varchar(30),
+	primary key(fechayhora,medico)
+);
+
+/*Ingrese varias consultas para un mismo médico en distintas horas el mismo día.*/
+insert into consultas values ('2020-05-15 15:30:00','Michael Sanders','12345678','Sofia Martinez',' Hospital Pediátrico Dr. Hugo'); 
+insert into consultas values ('2020-05-15 16:30:00','Michael Sanders','87654321','Bryan Adams',' Hospital Pediátrico Dr. Hugo');
+insert into consultas values ('2020-05-15 17:30:00','Michael Sanders','12345543','Michael Jordan',' Hospital Pediátrico Dr. Hugo');
+
+/*Ingrese varias consultas para diferentes medicos en la misma fecha y hora.*/
+insert into consultas values ('2020-05-15 18:30:00','Steward Rose','12345678','Sofia Martinez',' Hospital Pediátrico Dr. Hugo'); 
+insert into consultas values ('2020-05-15 18:30:00','John Adams','87654321','Bryan Adams',' Hospital Pediátrico Dr. Hugo');
+insert into consultas values ('2020-05-15 18:30:00','Andrew burksvick','12345543','Michael Jordan',' Hospital Pediátrico Dr. Hugo');
+
+/*Intente ingresar una consulta para un mismo medico en a misma hora el mismo dia.*/
+insert into consultas values ('2020-05-15 18:30:00','Steward Rose','12345678','Sofia Martinez',' Hospital Pediátrico Dr. Hugo');
+
+/*Problema B: Un club dicta clases de distintos deportes. En una tabla llamada "inscriptos" almacena la informacion necesaria.*/
+
+/*Elimine la tabla "inscriptos", si existe.*/
+drop table if exists inscriptos;
+
+/*La tabla contiene los siguientes campos:
+- documento del socio alumno: char(8) not null
+
+ - nombre del socio: varchar(30),
+
+ - nombre del deporte (tenis, futbol, natación, basquet): varchar(15) not null,
+
+ - año de inscripcion: year,
+
+ - matrícula: si la matrícula ha sido o no pagada ('s' o 'n').
+*/
+
+/*Necesitamos una clave primaria que identifique cada registro. Un socio puede inscribirse en 
+varios deportes en distintos años. Un socio no puede inscribirse en el mismo deporte el mismo año. 
+varios socios se inscriben en un mismo deporte. Cree la tabla con una clave compuesta:*/
+
+create table inscriptos(
+	documento char(8) not null,
+    nombre varchar(30),
+    deporte varchar(15) not null,
+    año year,
+	matricula char(1),
+	primary key(documento,deporte,año)
+);
+
+/*Inscriba a varios alumnos en el mismo deporte en el mismo año.*/
+insert into inscriptos values ('12345678','Adrian Ozuna','Basquet','2015','s');
+insert into inscriptos values ('87654321','Shiba Martinez','Basquet','2015','s');
+insert into inscriptos values ('12344321','Shoba Andaluz','Tenis','2015','s');
+
+/*Ingrese a un mismo alumno en varios deportes el mismo año.*/
+insert into inscriptos values ('84756284','Shibero Yola','Tenis','2019','s');
+insert into inscriptos values ('90295827','Shibero Yola','Basquet','2019','s');
+insert into inscriptos values ('02849594','Shibero Yola','Futbol','2019','s');
+
+/*Ingrese un registro con el mismo documento de socio en el mismo deporte en mismo año.*/
+insert into inscriptos values ('02849594','Ashboal Shibero','Basquet','2020','s');
+
+/*Intente inscribir a un socio alumno en un deporte en el cual ya esté inscripto en un año en el 
+cual ya se haya inscripto.*/
+insert into inscriptos values ('90429485','Ashboal Shibero','Basquet','2020','s');
+
+/*Intente eliminar un campo de la clave.*/
+alter table inscriptos
+	drop deporte;
+    
+/*Problema C: Un comercio guarda la informacion de sus ventas en una tabla llamada "facturas".*/
+
+/*Elimine la tabla si existe.*/
+drop table if exists facturas;
+
+/*Intente crear la tabla con la siguiente estructura:*/
+create table facturas(
+  serie char(1) not null,
+  numero int(10) zerofill auto_increment,
+  descripcion varchar(30),
+  precioporunidad decimal(5,2) unsigned,
+  cantidad tinyint unsigned,
+  primary key (serie,numero) 
+);
+
+/*Aparece un mensaje de error, la tabla no puede ser creada porque el campo definido 
+como "auto_increment" es secundario (primero está "serie") y sabemos que un campo "auto_increment" 
+debe estar primero en orden al ser definido parte de la clave compuesta.*/
+
+/*Cree la tabla cambiando el orden de los campos establecidos como clave primaria.*/
+create table facturas(
+	serie char(1) not null,
+	numero int(10) zerofill auto_increment,
+	numeroitem smallint unsigned not null,
+	descripcion varchar(30),
+	precioporunidad decimal(5,2) unsigned,
+	cantidad tinyint unsigned,
+	primary key (numero,serie,numeroitem) 
+);
+
+/*Ingrese 3 registros con igual "serie","numero" y distintos numeros de items.*/
+insert into facturas (serie,numero,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',100,1,'escuadra 20 cm.',2.50,20);
+insert into facturas (serie,numero,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',100,2,'escuadra 50 cm.',5,30);
+insert into facturas (serie,numero,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',100,3,'goma lapiz-tinta',0.35,100);
+    
+/*Ingrese los siguientes registros:*/
+insert into facturas (serie,numero,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',102,1,'lapices coloresx6',4.40,50);
+insert into facturas (serie,numero,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',102,2,'lapices coloresx12',8,60);
+insert into facturas (serie,numero,numeroitem,descripcion,precioporunidad,cantidad)
+	values('B',102,1,'lapices coloresx24',12.35,100);
+insert into facturas (serie,numero,numeroitem,descripcion,precioporunidad,cantidad)
+	values('B',102,2,'goma lapiz-tinta',0.35,200);
+    
+/*Ingrese los siguientes registros y vea que valor da al "numero" que no ingresa:*/
+insert into facturas (serie,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',1,'compas plastico',12,50);
+insert into facturas (serie,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',1,'compas metal',18.90,80);
+    
+/*Intente ingresar un registro con valores de clave repetida.*/
+insert into facturas (serie,numeroitem,descripcion,precioporunidad,cantidad)
+	values('A',1,'compas metal',18.90,80);
+    
+/*Muestra los registros concatenando "serie" con "numero", usando un alias para esa columna,
+muestre los demas campos y ordene por el alias.*/
+select concat(serie,numero) as numerodeserie,descripcion,precioporunidad,cantidad 
+	from facturas order by numerodeserie;
+
+/*Agrupe los registros por serie y numero de factura y muestre el total (en una columna calcula) de cada factura.*/
+
+#Problema propuesto 1:
+
+/*Inventar un problema desde 0 con mandatos y soluciones sobre el tema indice de una tabla.*/
+
+/*Elimine la tabla libros, si existe*/
+drop table if exists libros;
+
+/*Cree una tabla libros utilizando un index para la editorial.*/
+create table libros(
+	codigo int unsigned auto_increment,
+    titulo varchar(40) not null,
+    autor varchar(30),
+    editorial varchar(15),
+    primary key (codigo),
+    index i_editorial(editorial)
+);
+
+/*Muestre los indices de la tabla libros.*/
+show index from libros;
+
+#Problema propuesto 3:
+
+/*Problema: Una empresa almacena los datos de sus clientes en una tabla "cientes".*/
+
+/*Elimine la tabla "clientes" si existe.*/
+drop table if exists clientes;
+
+/*Creela con los siguientes campos y clave:*/
+create table clientes(
+	documento char(8),
+	apellido varchar(20),
+	nombre varchar(20),
+	domicilio varchar(30),
+	primary key(documento)
+ );
+ 
+ /*Vea la estructura de los indices de la tabla y analice la informacion.*/
+ show index from clientes;
+ 
+ /*Otros problemas: Un instituto de enseñanza almacena los datos de sus estudiantes en una tabla llamada "alumnos".*/
+ 
+ /*Elimine la tabla "alumnos", si existe.*/
+ drop table if exists alumnos;
+ 
+ /*Cree la tala con la siguiente estructura.*/
+ create table alumnos(
+	legajo varchar(4) not null,
+	documento char(8) not null,
+	apellido varchar(30),
+	nombre varchar(30),
+	domicilio varchar(30),
+	primary key (legajo)
+);
+
+/*Vea la estructura de los indices de la tabla y analice la informacion.*/
+show index from alumnos;
+
+#Problema propuesto 4:
+
+/*Problema: Retome la tabla llamada "medicamentos" de una farmacia.*/
+
+/*Elimine la tabla, si existe*/
+drop table if exists medicamentos;
+
+/*Cree la tabla e indexela por el campo "laboratorio".*/
+create table medicamentos(
+	codigo int unsigned auto_increment,
+	nombre varchar(20) not null,
+	laboratorio varchar(20),
+	precio decimal (6,2) unsigned,
+	cantidad int unsigned,
+	primary key(codigo),
+	index i_laboratorio (laboratorio)
+);
+
+/*Visualice los indices de la tabla "medicamentos" y analice la informacion.*/
+show index from medicamentos;
+
+/*Problema 2 A: Retomamos la tabla "clientes" de una empresa.*/
+
+/*Elimine la tabla "clientes", si existe.*/
+drop table if exists clientes;
+
+/*Creela y defina un indice por multiples campos, por ciudad y provincia.*/
+create table clientes (
+	documento char (8) not null,
+	nombre varchar(30) not null,
+	domicilio varchar(30),
+	ciudad varchar(20),
+	provincia varchar (20),
+	telefono varchar(11),
+	primary key (documento), 
+	index i_ciudadprovincia (ciudad,provincia)
+);
+
+/*Muestre los indices.*/
+show index from clientes;
+
+/*Problema 2 B: Trabaje con la tabla "agenda" que registra la informacion referente a sus amigos.*/
+
+/*Elimine la tabla si existe.*/
+drop table if exists agenda;
+
+/*Cree la tabla con la siguiente estructura:*/
+create table agenda(
+	apellido varchar(30),
+	nombre varchar(20) not null,
+	domicilio varchar(30),
+	telefono varchar(11),
+	mail varchar(30),
+	index i_apellido (apellido)
+);
+
+/*Ingrese los siguientes registros:*/
+insert into agenda 
+	values('Perez','Juan','Sarmiento 345','4334455','juancito@gmail.com');
+insert into agenda 
+	values('Garcia','Ana','Urquiza 367','4226677','anamariagarcia@hotmail.com');
+insert into agenda 
+	values('Lopez','Juan','Avellaneda 900',null,'juancitoLopez@gmail.com');
+insert into agenda 
+	values('Juarez','Mariana','Sucre 123','0525657687','marianaJuarez2@gmail.com');
+insert into agenda 
+	values('Molinari','Lucia','Peru 1254','4590987','molinarilucia@hotmail.com');
+insert into agenda 
+	values('Ferreyra','Patricia','Colon 1534','4585858',null);
+insert into agenda 
+	values('Perez','Susana','San Martin 333',null,null);
+insert into agenda 
+	values('Perez','Luis','Urquiza 444','0354545256','perezluisalberto@hotmail.com');
+insert into agenda 
+	values('Lopez','Maria','Salta 314',null,'lopezmariayo@gmail.com');
+    
+/*Vea la informacion de los indices.*/
+show index from agenda;
+
+#Problema propuesto 5:
+
+/*Problema: Un instituto de enseñanza guarda los siguientes datos de sus alumnos:
+
+ - año de inscripción,
+
+ - número de inscripto, comienza desde 1 cada año,
+
+ - nombre del alumno,
+
+ - documento del alumno,
+
+ - domicilio,
+
+ - ciudad,
+
+ - provincia,
+
+ - clave primaria: número de inscripto y año de inscripción.*/
+ 
+/*Elimine la tabla "alumnas", si existe.*/
+drop table if exists alumnos;
+ 
+/*Cree la tabla definiendo una clave primaria compuesta (año de inscripción y número de 
+inscripto), un índice único por el campo "documento" y un índice común por ciudad y provincia:*/
+create table alumnos(
+	año year not null,
+	numero int unsigned not null,
+	nombre varchar(30),
+	documento char(8) not null,
+	domicilio varchar(30),
+	ciudad varchar(20),
+	provincia varchar(20),  
+	primary key(año,numero),
+	unique i_documento (documento),
+	index i_ciudadprovincia (ciudad,provincia)
+);
+
+/*Vea los indices de la tabla.*/
+show index from alumnos;
+
+/*Ingrese algunos registros. Ingrese 2 ó 4 alumnos para los años 2004, 2005 y 2006.*/
+insert into alumnos values (2004,1,'Adrian Ozuna','12345678','Juan de la cruz 04','Distrito Nacional','Santo Domingo');
+insert into alumnos values (2005,2,'Shibero Shiber','87654321','Juan de la cruz 05','Santo Domingo','Santo Domingo');
+insert into alumnos values (2006,3,'Shiber Shibero','12344321','Juan de la cruz 06','Santo Domingo','Santo Domingo');
+
+/*Intente ingresar un alumno con documento repetido.*/
+insert into alumnos values (2006,3,'Shiber Shibero','12344321','Juan de la cruz 06','Santo Domingo','Santo Domingo');
+
+/*Ingrese varios alumnos de la misma ciudad y provincia.*/
+insert into alumnos values (2007,3,'Andrew Garfield','30846234','Juan de la Cruz 07','ciudad1','provincia1');
+insert into alumnos values (2008,3,'Garfield Andrew','39485923','Juan de la Cruz 08','ciudad1','provincia1');
+
+/*Problema A: Una clinica registra las consultas de los pacientes en una tabla llamada "consultas" que almacena la siguiente
+informacion:
+- fecha de la consulta,
+
+ - número de consulta por día,
+
+ - documento del paciente,
+
+ - obra social del paciente,
+
+ - nombre del médico que atiende al paciente
+*/
+
+/*Elimine la tabla, si existe.*/
+drop table if exists consultas;
+
+/*Cree la tabla con una clave primaria compuesta (fecha y número de consulta); un índice único 
+(fecha,documento y médico). Hay 2 campos por los cuales podemos realizar consultas 
+frecuentemente: "medico" y "obrasocial", cree índices para esos campos.*/
+
+/*Cree la tabla con la siguiente estructura:*/
+create table consultas(
+	fecha date,
+	numero int unsigned,
+	documento char(8) not null,
+	obrasocial varchar(30),
+	medico varchar(30),
+	primary key(fecha,numero),
+	unique i_consulta(documento,fecha,medico),
+	index i_medico (medico),
+	index i_obrasocial (obrasocial)
+ );
+ 
+/*Vea los indices.*/
+show index from consultas;
+
+/*Los valores de la clave primaria no pueden repetirse. Intente ingresar dos pacientes el mismo dia con el mismo numero de consulta.*/
+insert into consultas values ('2020-11-15','1','12345678','Hospital Nacional 1','Dr. Andres Matias');
+insert into consultas values ('2020-11-15','1','12345678','Hospital Nacional 2','Dr. Johnas Cruz');
+
+/*Los valores para el índice único no pueden repetirse. Intente ingresar una consulta del mismo 
+paciente, en la misma fecha con el mismo médico.*/
+insert into consultas values ('2020-11-15','1','12345678','Hospital Nacional 2','Dr. Johnas Cruz');
+
+/*Note que los índices por los campos "medico" y "obrasocial" son comunes, porque los valores se 
+repiten. Ingrese consultas en las cuales se repitan los médicos y las obras sociales.*/
+insert into consultas values ('2020-12-15','2','12356235','Hospital Nacional 2','Dr. Johnas Cruz');
+
+/*Una empresa de remises tiene registrada la infomracion de sus vehiculos en una tabla llamada "remis".*/
+
+/*Elimine la tabla, si existe.*/
+drop table if exists remis;
+
+/*Cree la tabla con una clave primaria por número de vehículo y un índice único por "patente", 
+éste es un valor por el cual podemos realizar consultas frecuentemente y es único (igual que el 
+número del remis):*/
+create table remis(
+	patente char(6) not null,
+	numero tinyint unsigned not null,
+	marca varchar(15),
+	modelo year,
+	primary key (numero),
+	unique i_patente (patente)
+);
+ 
+/*Vea los indices y analice la informacion.*/
+show index from remis;
+
+/*Los valores de la clave primaria no pueden repetirse. Intente ingresar 2 vehículos con el mismo 
+número.*/
+insert into remis values ('d12345',1,'Honda','2010');
+insert into remis values ('d65432',1,'Toyota','2006');
+
+/*Los valores para el índice único no pueden repetirse. Intente ingresar 2 vehículos con igual 
+patente.*/
+insert into remis values ('f12345',2,'Ferrari','2019');
+insert into remis values ('f12345',3,'Toyota','2006');
